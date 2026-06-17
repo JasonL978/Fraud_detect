@@ -1,0 +1,26 @@
+# Secrets / local config
+.env
+
+# Data — never commit PaySim or generated parquet
+data/raw/
+data/*.csv
+data/*.parquet
+*.parquet
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.python-version
+*.egg-info/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# MLflow / artifacts (Week 1 Day 5)
+mlruns/
+mlartifacts/
+
+# OS
+.DS_Store
+Thumbs.db
