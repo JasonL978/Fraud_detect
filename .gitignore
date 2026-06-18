@@ -1,8 +1,9 @@
 # Secrets / local config
 .env
 
-# Data — never commit PaySim or generated parquet
-data/raw/
+# Data — never commit PaySim or generated parquet, but keep the empty dir
+data/raw/*
+!data/raw/.gitkeep
 data/*.csv
 data/*.parquet
 *.parquet

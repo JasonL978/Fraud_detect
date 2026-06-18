@@ -12,6 +12,31 @@ topic created automatically on startup.
 
 - Docker Desktop running (Compose v2 — `docker compose`, not `docker-compose`).
 
+### Installing from zero on Windows 11
+
+Docker Desktop is **free for personal / portfolio use** (paid only for orgs
+with 250+ employees or $10M+ revenue). It runs on the WSL2 backend, so WSL2
+must be installed first.
+
+Run these in an **Administrator** PowerShell:
+
+```powershell
+# 1. Install WSL2, then REBOOT when prompted.
+wsl --install
+#    (fallback if that errors: `wsl --install --no-distribution` then `wsl --install -d Ubuntu`)
+
+# 2. After reboot, install Docker Desktop.
+winget install --id Docker.DockerDesktop -e --accept-source-agreements --accept-package-agreements
+```
+
+Then launch **Docker Desktop** from the Start menu (first start initializes the
+WSL2 backend — give it a minute) and verify in a normal terminal:
+
+```powershell
+docker --version
+docker compose version
+```
+
 ## Bring it up
 
 ```bash
