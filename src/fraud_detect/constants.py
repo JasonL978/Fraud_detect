@@ -49,6 +49,19 @@ HASH_SEED = "fraud-detect:v1"
 # Frozen 5-symbol payment enum (mirrors transaction_v1.avsc TxType).
 TX_TYPES = ("CASH_IN", "CASH_OUT", "DEBIT", "PAYMENT", "TRANSFER")
 
+# Feature windows for streaming/offline aggregation, ordered shortest -> longest.
+# Capped at 24h to match the embargo (MAX_FEATURE_WINDOW_HOURS); no 7d in v1.
+# (label, milliseconds)
+FEATURE_WINDOWS = (
+    ("10s", 10_000),
+    ("30s", 30_000),
+    ("1m", 60_000),
+    ("5m", 300_000),
+    ("1h", 3_600_000),
+    ("24h", 86_400_000),
+)
+MAX_FEATURE_WINDOW_MS = FEATURE_WINDOWS[-1][1]
+
 EPOCH_MS = int(EPOCH.timestamp() * 1000)
 
 
