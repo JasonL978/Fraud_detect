@@ -1,6 +1,6 @@
 # Real-Time P2P Payment Fraud Detection
 
-> **Status:** Week 1, Day 1 — data plane skeleton.
+> **Status:** Week 1, Day 2 — target Avro schema + PaySim→event mapping.
 >
 > **All fraud metrics in this project are synthetic-on-synthetic.** The base
 > data is PaySim (a generated mobile-money dataset); APP-fraud, device, and
@@ -41,8 +41,19 @@ See [infra/README.md](infra/README.md) for details and the verify checklist.
 ```
 docker-compose.yml      # local dev stack (Redpanda + Console)
 infra/                  # infra configs + runbook
-data/                   # PaySim + generators (gitignored raw data)   [Day 2+]
+data/schemas/           # Avro: transactions.v1 (target event shape)   [Day 2]
+src/fraud_detect/       # library: constants (frozen timeline), mapping [Day 2]
+scripts/                # map_demo.py and other runnable helpers
+tests/                  # pytest suite
 features/               # Feast defs + streaming/batch features        [Week 2]
 models/                 # baseline, eval, canary set                   [Day 5+]
 serving/                # inference / decision_shim / intervention     [Week 3]
+```
+
+## Tests
+
+```bash
+python -m venv .venv && .venv/Scripts/activate   # Windows
+pip install -e ".[dev]"
+pytest -q
 ```

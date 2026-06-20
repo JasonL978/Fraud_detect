@@ -1,0 +1,30 @@
+{
+  "source": "SYNTHETIC PLACEHOLDER",
+  "metrics": {
+    "pr_auc": 1.0,
+    "recall_at_1pct_fpr": 1.0,
+    "roc_auc": 0.9999999999999999,
+    "n_pos": 167,
+    "n_neg": 3044,
+    "base_rate": 0.05200872002491436
+  },
+  "scale_pos_weight": 20.082460732984295,
+  "split_sizes": {
+    "train": 16107,
+    "test": 3211
+  },
+  "feature_columns": [
+    "amount",
+    "oldbalanceOrg",
+    "newbalanceOrig",
+    "oldbalanceDest",
+    "newbalanceDest",
+    "errorBalanceOrig",
+    "errorBalanceDest",
+    "type_CASH_IN",
+    "type_CASH_OUT",
+    "type_DEBIT",
+    "type_PAYMENT",
+    "type_TRANSFER"
+  ]
+}

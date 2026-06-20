@@ -1,0 +1,112 @@
+{
+  "type": "record",
+  "name": "Transaction",
+  "namespace": "com.fraud.events",
+  "doc": "Raw P2P payment event for topic transactions.v1. This is the PRODUCT event shape, not PaySim's row shape. PaySim is one source that populates a subset of fields; device/funding/geo are injected later (nullable). Computed features (velocity, fan-in, decay) NEVER live here — they belong in the feature store, to avoid train/serve skew.",
+  "fields": [
+    {
+      "name": "event_id",
+      "type": "string",
+      "doc": "Idempotency key. Deterministically derived from the source row identity so offline recompute reproduces it exactly (required for online/offline parity)."
+    },
+    {
+      "name": "event_timestamp",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "Event time in UTC millis. Derived from PaySim `step` (hour index) + deterministic intra-hour jitter against a frozen epoch. See fraud_detect.constants.EPOCH."
+    },
+    {
+      "name": "tx_type",
+      "type": {
+        "type": "enum",
+        "name": "TxType",
+        "symbols": ["CASH_IN", "CASH_OUT", "DEBIT", "PAYMENT", "TRANSFER"]
+      },
+      "doc": "Payment type. Frozen 5-symbol enum. An unknown value at consume time is routed to a review bucket (RT-014, Day 4) — it is NOT added to this enum, because adding an enum symbol is not backward-compatible in Avro."
+    },
+    {
+      "name": "amount",
+      "type": "double"
+    },
+    {
+      "name": "sender_id",
+      "type": "string"
+    },
+    {
+      "name": "recipient_id",
+      "type": "string"
+    },
+    {
+      "name": "sender_old_balance",
+      "type": "double"
+    },
+    {
+      "name": "sender_new_balance",
+      "type": "double"
+    },
+    {
+      "name": "recipient_old_balance",
+      "type": "double"
+    },
+    {
+      "name": "recipient_new_balance",
+      "type": "double"
+    },
+    {
+      "name": "source_step",
+      "type": "int",
+      "doc": "Provenance: the original PaySim hour-index step. Kept because the time-ordered train/test split is defined by step boundaries (fraud_detect.constants)."
+    },
+    {
+      "name": "label_is_fraud",
+      "type": "boolean",
+      "doc": "GROUND-TRUTH ORACLE. Present only because PaySim is fully labeled. The streaming path MUST ignore this; only the offline batch trainer reads it. In production, labels arrive via confirmed_fraud.v1 with a 7-30 day delay through the label-quarantine flow."
+    },
+    {
+      "name": "funding_source",
+      "type": [
+        "null",
+        {
+          "type": "enum",
+          "name": "FundingSource",
+          "symbols": ["BALANCE", "BANK", "CARD"]
+        }
+      ],
+      "default": null,
+      "doc": "Injected later. Needed for the 'accidental send + reversal' typology (stolen-card funding risk)."
+    },
+    {
+      "name": "device_id",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Injected later by the device/login stream. ATO device-change signal."
+    },
+    {
+      "name": "recipient_account_age_days",
+      "type": ["null", "int"],
+      "default": null,
+      "doc": "Injected later. Input to mule / online graph features."
+    },
+    {
+      "name": "geo_region",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Injected later. Behavioral / geo features."
+    },
+    {
+      "name": "channel",
+      "type": [
+        "null",
+        {
+          "type": "enum",
+          "name": "Channel",
+          "symbols": ["APP", "WEB", "API"]
+        }
+      ],
+      "default": null,
+      "doc": "Injected later. 'Atypical access type' APP-fraud signal."
+    }
+  ]
+}
